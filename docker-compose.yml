@@ -1,3 +1,5 @@
+version: '3'
+
 services:
   bot:
     build: .
@@ -6,3 +8,23 @@ services:
     env_file:
       - .env
     command: [ "node", "dist/main.js" ]
+    depends_on:
+      - mongodb
+    networks:
+      - default # или можете оставить, если не хотите использовать другую сеть
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ''
+      MONGO_INITDB_DATABASE: mongodb # Имя базы данных
+    ports:
+      - "27017:27017" # Порты для связи с MongoDB
+    networks:
+      - default # В случае использования той же сети
+
+networks:
+  default:
+    driver: bridge # Использование стандартной сети bridge
