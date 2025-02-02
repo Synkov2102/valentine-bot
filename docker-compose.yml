@@ -8,5 +8,6 @@ services:
     environment:
       NODE_ENV: production
     volumes:
-      - .:/app
+      - .:/app           # Монтируем всю директорию
+      - ./.env:/app/.env # Монтируем только .env файл
     command: npm run start:prod
