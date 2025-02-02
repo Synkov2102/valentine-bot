@@ -1,25 +1,23 @@
-# Используем официальный образ Node.js
-FROM node:16-alpine
+# Используем минимальный образ Node.js 18
+FROM node:18-alpine
 
-# Устанавливаем рабочую директорию внутри контейнера
+# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем package.json и package-lock.json (если есть)
+# Копируем package.json и package-lock.json
 COPY package*.json ./
 
-# Устанавливаем зависимости
+# Устанавливаем все зависимости (включая devDependencies)
 RUN npm install
 
-# Копируем .env
-COPY .env ./    
-# Копируем все файлы проекта
+# Копируем весь код проекта
 COPY . .
 
-# Собираем проект (если требуется)
+# Компилируем TypeScript-код в JavaScript
 RUN npm run build
 
-# Указываем порт, который будет использовать приложение
-EXPOSE 3000
+# Отображаем содержимое `dist/` для отладки
+RUN ls -la dist
 
-# Команда для запуска приложения
-CMD ["npm", "run", "start:prod"]
+# Запускаем приложение
+CMD ["node", "dist/main.js"]

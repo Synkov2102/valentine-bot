@@ -1,13 +1,14 @@
-version: '3.8'
-
 services:
-  app:
+  bot:
     build: .
-    ports:
-      - "3000:3000"
-    environment:
-      NODE_ENV: production
-    volumes:
-      - .:/app           # Монтируем всю директорию
-      - ./.env:/app/.env # Монтируем только .env файл
-    command: npm run start:prod
+    container_name: nestjs-telegram-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - bot-network
+    command: [ "node", "dist/main.js" ]
+
+networks:
+  bot-network:
+    driver: bridge
