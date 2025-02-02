@@ -5,10 +5,4 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    networks:
-      - bridge # Указываем сеть bridge
     command: [ "node", "dist/main.js" ]
-
-networks:
-  bridge:
-    external: true # Указываем, что сеть bridge внешняя, уже существующая
