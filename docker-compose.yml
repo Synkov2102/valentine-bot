@@ -6,9 +6,9 @@ services:
     env_file:
       - .env
     networks:
-      - bot-network
+      - bridge # Указываем сеть bridge
     command: [ "node", "dist/main.js" ]
 
 networks:
-  bot-network:
-    driver: bridge
+  bridge:
+    external: true # Указываем, что сеть bridge внешняя, уже существующая
