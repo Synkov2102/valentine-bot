@@ -40,7 +40,7 @@ export class TelegramBotService {
     const welcomeMessage = `Привет!🌹 Я бот для обмена валентинками❤️\nC моей помощью ты можешь поблагодарить коллег и оставить им приятные послания💌\n\n✨ Вот что я умею:\n\n1️⃣ *Отправить валентинку* — необходимо выбрать валентинку, написать текст, указать ник пользователя в телеграм через @, кому хотите сделать отправление. Ваша валентинка будет полностью анонимной.\n\n2️⃣ *Проверить свой почтовый ящик* — посмотреть, какие валентинки вы получили.`;
 
     const imageUrl =
-      'https://img.freepik.com/premium-vector/cute-cat-character-cupid-cat-with-bow-arrow-valentines-day-greeting-card_254685-1228.jpg';
+      'https://downloader.disk.yandex.ru/preview/36de2da6db6cd3a9e3f8475638098c3731bad28a2ffad5bb6c3cf0634f0e2b77/679fc00a/Fe4hwWUY6pHgl1UShRLuE4v0JQzvLLXM0mo6R7sNwXvaQy2gnSp3uPZMXwoGJalhD-SRdwLHJdZyej7EEAmbQg%3D%3D?uid=0&filename=Frame%202%20%281%29.jpg&disposition=inline&hash=&limit=0&content_type=image%2Fjpeg&owner_uid=0&tknv=v2&size=2048x2048';
 
     try {
       await this.bot.sendPhoto(chatId, imageUrl, {
