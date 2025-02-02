@@ -7,7 +7,7 @@ import { ImageService } from './image.service';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://root:!Z21022002z@87.249.44.63:27017/'),
+    MongooseModule.forRoot(process.env.MONGO_URI),
     MongooseModule.forFeature([{ name: 'Valentine', schema: ValentineSchema }]),
     MongooseModule.forFeature([{ name: 'Image', schema: ImageSchema }]),
   ],
