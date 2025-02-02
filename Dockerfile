@@ -10,6 +10,8 @@ COPY package*.json ./
 # Устанавливаем зависимости
 RUN npm install
 
+# Копируем .env
+COPY .env ./    
 # Копируем все файлы проекта
 COPY . .
 
