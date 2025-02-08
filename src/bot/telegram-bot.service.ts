@@ -66,7 +66,26 @@ export class TelegramBotService {
       return;
     }
 
-    if (data.startsWith('select_image_')) {
+    const [action, username] = data.split('_');
+
+    if (data === 'view_mailbox') {
+      const username = callbackQuery.from.username;
+      await this.handlerService.showMailTypes(this.bot, chatId, username);
+    } else if (action === 'view-all') {
+      await this.handlerService.showValentinesForUser(
+        this.bot,
+        chatId,
+        username,
+        'all',
+      );
+    } else if (action === 'view-new') {
+      await this.handlerService.showValentinesForUser(
+        this.bot,
+        chatId,
+        username,
+        'new',
+      );
+    } else if (data.startsWith('select_image_')) {
       const imageId = data.replace('select_image_', '');
       this.stateService.updateData(chatId, { imageId });
       this.stateService.setState(chatId, 'awaiting_text');
@@ -74,13 +93,6 @@ export class TelegramBotService {
     } else if (data === 'cancel_form') {
       this.stateService.clearState(chatId);
       await this.handlerService.showStandartActions(this.bot, chatId);
-    } else if (data === 'view_mailbox') {
-      const username = callbackQuery.from.username;
-      await this.handlerService.showValentinesForUser(
-        this.bot,
-        chatId,
-        username,
-      );
     } else if (data === 'send_valentine') {
       await this.handlerService.startValentineForm(this.bot, chatId);
     }
@@ -110,11 +122,7 @@ export class TelegramBotService {
 
     if (text === 'Посмотреть почту') {
       const username = msg.from.username;
-      await this.handlerService.showValentinesForUser(
-        this.bot,
-        chatId,
-        username,
-      );
+      await this.handlerService.showMailTypes(this.bot, chatId, username);
     } else if (text === 'Отправить валентинку') {
       await this.handlerService.startValentineForm(this.bot, chatId);
     } else {

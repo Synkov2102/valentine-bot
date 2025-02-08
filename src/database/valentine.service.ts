@@ -15,18 +15,38 @@ export class ValentineService {
   }
 
   async findValentinesForUser(username: string): Promise<Valentine[]> {
-    return await this.valentineModel.find({ to: username }).exec();
+    const valentines = await this.valentineModel.find({ to: username }).exec();
+    await this.valentineModel
+      .updateMany({ to: username }, { viewed: true })
+      .exec();
+    return valentines;
+  }
+
+  async findUnviewedValentinesForUser(username: string): Promise<Valentine[]> {
+    const valentines = await this.valentineModel
+      .find({ to: username, viewed: false })
+      .exec();
+    if (valentines.length > 0) {
+      await this.valentineModel
+        .updateMany({ to: username, viewed: false }, { viewed: true })
+        .exec();
+    }
+    return valentines;
   }
 
   async findAll(): Promise<Valentine[]> {
     return await this.valentineModel.find().exec();
   }
 
-  async findById(id: string): Promise<Valentine> {
-    return await this.valentineModel.findById(id).exec();
+  async findById(id: string): Promise<Valentine | null> {
+    const valentine = await this.valentineModel.findById(id).exec();
+    if (valentine && !valentine.viewed) {
+      await this.valentineModel.findByIdAndUpdate(id, { viewed: true }).exec();
+    }
+    return valentine;
   }
 
-  async delete(id: string): Promise<Valentine> {
+  async delete(id: string): Promise<Valentine | null> {
     return await this.valentineModel.findByIdAndDelete(id).exec();
   }
 }

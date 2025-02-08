@@ -19,6 +19,9 @@ export class Valentine {
 
   @Prop({ default: Date.now })
   createdAt: Date;
+
+  @Prop({ required: true })
+  viewed: boolean;
 }
 
 export const ValentineSchema = SchemaFactory.createForClass(Valentine);

@@ -115,6 +115,7 @@ export class HandlerService {
             to: recipient,
             from: 'me', // Здесь можно подставить фактическое имя отправителя
             createdAt: new Date(),
+            viewed: false,
           });
 
           await bot.sendMessage(
@@ -147,28 +148,39 @@ export class HandlerService {
   }
 
   /**
-   * Отправляет все валентинки для указанного пользователя.
+   * Отправляет валентинки для указанного пользователя.
    * @param {TelegramBot} bot - Экземпляр Telegram-бота.
    * @param {number} chatId - ID чата с пользователем.
    * @param {string} username - Имя пользователя, для которого нужно показать валентинки.
+   * @param {'all' | 'new'} type - Тип валентинок: 'all' (все) или 'new' (непросмотренные).
    */
   async showValentinesForUser(
     bot: TelegramBot,
     chatId: number,
     username: string,
+    type: 'all' | 'new',
   ) {
     try {
-      // Получаем все валентинки для пользователя
-      const valentines = await this.valentineService.findValentinesForUser(
-        username.toLowerCase(),
-      );
+      let valentines;
 
-      if (!valentines || !valentines.length) {
-        await bot.sendMessage(chatId, `У вас нет валентинок.`);
+      if (type === 'new') {
+        valentines = await this.valentineService.findUnviewedValentinesForUser(
+          username.toLowerCase(),
+        );
+      } else {
+        valentines = await this.valentineService.findValentinesForUser(
+          username.toLowerCase(),
+        );
+      }
+
+      if (!valentines || valentines.length === 0) {
+        await bot.sendMessage(
+          chatId,
+          `У вас нет ${type === 'new' ? 'новых' : ''} валентинок.`,
+        );
         return;
       }
 
-      // Отправляем каждую валентинку
       for (const valentine of valentines) {
         await this.sendImageWithCaption(
           bot,
@@ -203,6 +215,43 @@ export class HandlerService {
           ],
         ],
       };
+      await bot.sendMessage(chatId, 'Выберите действие:', {
+        reply_markup: keyboard,
+      });
+    } catch (error) {
+      console.error('Ошибка при отправке списка действий:', error);
+      await bot.sendMessage(
+        chatId,
+        'Произошла ошибка при отправке списка действий.',
+      );
+    }
+  }
+
+  /**
+   * Показывает выбор типа почты (все или новые) пользователю.
+   * @param {TelegramBot} bot - Экземпляр Telegram-бота.
+   * @param {number} chatId - ID чата с пользователем.
+   * @param {string} username - Имя пользователя.
+   */
+  async showMailTypes(bot: TelegramBot, chatId: number, username: string) {
+    try {
+      const keyboard = {
+        inline_keyboard: [
+          [
+            {
+              text: '📩 Посмотреть все',
+              callback_data: `view-all_${username}`,
+            },
+          ],
+          [
+            {
+              text: '🆕 Посмотреть новые',
+              callback_data: `view-new_${username}`,
+            },
+          ],
+        ],
+      };
+
       await bot.sendMessage(chatId, 'Выберите действие:', {
         reply_markup: keyboard,
       });
