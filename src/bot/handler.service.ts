@@ -178,6 +178,7 @@ export class HandlerService {
           chatId,
           `У вас нет ${type === 'new' ? 'новых' : ''} валентинок.`,
         );
+        await this.showStandartActions(bot, chatId);
         return;
       }
 
