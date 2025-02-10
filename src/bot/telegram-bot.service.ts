@@ -60,16 +60,16 @@ export class TelegramBotService {
   private async handleCallbackQuery(callbackQuery: TelegramBot.CallbackQuery) {
     const chatId = callbackQuery?.message?.chat.id;
     const data = callbackQuery.data;
+    const username = callbackQuery.from.username;
 
     if (!chatId) {
       console.error('Chat ID не найден.');
       return;
     }
 
-    const [action, username] = data.split('_');
+    const [action] = data.split('_');
 
     if (data === 'view_mailbox') {
-      const username = callbackQuery.from.username;
       await this.handlerService.showMailTypes(this.bot, chatId, username);
     } else if (action === 'view-all') {
       await this.handlerService.showValentinesForUser(
